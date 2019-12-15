@@ -15,8 +15,18 @@ jobs:
           TARGET: world
         run: |
           echo "Hello, $TARGET!"
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag centos-7-perl:$(date +%s)
+#      - name: Build the Docker image
+#        run: docker build . --file Dockerfile --tag centos-7-perl:$(date +%s)
+      - name: Publish image to registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: djschaap/centos-7-perl/centos-7-perl
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.pkg.github.com
+          snapshot: true
+          dockerfile: Dockerfile
+          #tag_names: true
       - name: Say goodbye
         env:
           TARGET: world
