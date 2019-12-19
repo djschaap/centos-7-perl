@@ -1,0 +1,42 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+trigger:
+  - dev*
+  - master
+resources:
+  - repo: self
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '10fd261b-f137-4ad4-b6bf-c5bb94f1236f'
+  imageRepository: 'centos7perlimagename'
+  containerRegistry: 'sentinelnoc.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+stages:
+  - stage: build_and_push
+    displayName: Build and push image (stage)
+    jobs:
+      - job: build_and_push
+        displayName: Build and push (job)
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: Docker@2
+            displayName: Build an image
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+          # https://github.com/microsoft/azure-pipelines-yaml/tree/master/templates
+          #- upload: manifests
+          #  artifact: manifests
+          # https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/build-artifacts?view=azure-devops&tabs=yaml
+          # incomplete - need to put *something* into $env:BUILD_ARTIFACTSTAGINGDIRECTORY/
+          #- task: PublishBuildArtifacts@1
+          #  inputs:
+          #    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          #    artifactName: drop
