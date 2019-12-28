@@ -2,10 +2,7 @@ name: Docker Image CI
 on:
   push:
     branches:
-      - dev*
-      - master
-    tags:
-      - v*
+      - ci-disabled
 env:
   IMAGE_NAME: centos-7-perl
 jobs:
