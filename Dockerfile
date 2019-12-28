@@ -55,6 +55,12 @@ RUN \
 # Test2::Plugin::NoWarnings works under Docker 19.03.5 (Fedora 30)
 #   but fails t/compile.t under podman 1.6.2;
 #   using --force seems to work
+RUN mkdir -p /usr/local/bin /usr/local/entrypoint.d
+COPY \
+  docker-entrypoint-app.sh \
+  docker-entrypoint.sh \
+  /usr/local/bin/
 RUN \
   groupadd -r app \
   && useradd -mr -g app -s /bin/bash -G wheel app
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
